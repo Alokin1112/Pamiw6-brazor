@@ -1,0 +1,125 @@
+@page "/books"
+@inject BookService BookService
+
+<PageTitle>Books</PageTitle>
+
+<h1>Books</h1>
+
+
+@if (books == null)
+{
+  <p><em>Loading...</em></p>
+}
+else
+{
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Tytuł</th>
+        <th>Autor</th>
+        <th>Liczba stron</th>
+        <th>Cena</th>
+        <th>Usun</th>
+        <th>Edytuj</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var book in books.data.data)
+      {
+        <tr>
+          <td>@book.title</td>
+          <td>@(book.author.firstName + " " + book.author.lastName)</td>
+          <td>@book.pageCount</td>
+          <td>@RoundPrice(book.price) zł</td>
+          <td><button
+              class="btn btn-primary"
+              @onclick="()=> DeleteBook(book.id)"
+            >Usuń</button></td>
+          <td><button class="btn btn-primary">Edytuj</button></td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <nav>
+    <ul class="pagination">
+      @if (pagination.page <= 0)
+      {
+        <li class="page-item disabled">
+          <button class="page-link">Previous</button>
+        </li>
+      }
+      else
+      {
+        <li class="page-item">
+          <button
+            class="page-link"
+            @onclick="()=>PreviousPage()"
+          >Previous</button>
+        </li>
+
+      }
+      <li class="page-item">
+        <span class="page-link"> @(pagination.page + 1)
+        </span>
+      </li>
+      @if (pagination.page + 1 >= books.data.pageCount)
+      {
+        <li class="page-item disabled">
+          <button class="page-link">Next</button>
+        </li>
+      }
+      else
+      {
+
+        <li class="page-item">
+          <button
+            class="page-link"
+            @onclick="()=>NextPage()"
+          >Next</button>
+        </li>
+      }
+    </ul>
+  </nav>
+}
+
+@code {
+  private ServiceResponse<PaginableResponse<List<BookDTO>>>? books;
+  private Pagination pagination = new Pagination()
+    {
+      page = 0,
+      take = 5
+    };
+  protected override async Task OnInitializedAsync()
+  {
+    books = await BookService.GetBooks(pagination);
+  }
+
+  private decimal RoundPrice(decimal price)
+  {
+    decimal roundedNumber = Math.Round(price, 2);
+
+    return roundedNumber;
+  }
+
+  private async Task DeleteBook(int id)
+  {
+    await BookService.deleteBook(id);
+    books = await BookService.GetBooks(pagination);
+  }
+
+  private async Task PreviousPage()
+  {
+    if (pagination.page <= 0) return;
+    pagination.page = pagination.page - 1;
+    books = await BookService.GetBooks(pagination);
+  }
+
+  private async Task NextPage()
+  {
+    if (pagination.page + 1 >= books.data.pageCount) return;
+    pagination.page = pagination.page + 1;
+    books = await BookService.GetBooks(pagination);
+  }
+
+}
