@@ -1,0 +1,44 @@
+﻿@page "/authors"
+@inject AuthorService AuthorService
+
+<PageTitle>Authors</PageTitle>
+
+<h1>Authors</h1>
+
+
+@if (authors == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Imie</th>
+                <th>Nazwisko</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var author in authors.data)
+            {
+                <tr>
+                    <td>@author.id</td>
+                    <td>@author.firstName</td>
+                    <td>@author.lastName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private ServiceResponse<List<AuthorDTO>>? authors;
+
+    protected override async Task OnInitializedAsync()
+    {
+        authors = await AuthorService.GetAuthors();
+    }
+
+}
