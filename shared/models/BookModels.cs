@@ -35,7 +35,7 @@ namespace Pamiw6.Shared.Models
 
   public class EditableBook
   {
-    public int authorId { get; set; }
+    public int author_id { get; set; }
     public string title { get; set; }
     public int pageCount { get; set; }
     public decimal price { get; set; }

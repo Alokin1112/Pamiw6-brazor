@@ -52,6 +52,33 @@ namespace Pamiw6.Shared.Services.BookService
       }
     }
 
+    public async Task<ServiceResponse<BookDTO>> GetBookById(int id)
+    {
+      try
+      {
+        var response = await _httpClient.GetAsync(_appSettings.BaseAPIUrl + _appSettings.BookEndpoint.SpecificBookEndpoint + id);
+        if (!response.IsSuccessStatusCode)
+          return new ServiceResponse<BookDTO>()
+          {
+            isSuccess = false,
+            message = "HTTP request failed"
+          };
+
+        var json = await response.Content.ReadAsStringAsync();
+        var result = await response.Content.ReadFromJsonAsync<ServiceResponse<BookDTO>>();
+
+        return result;
+      }
+      catch (Exception)
+      {
+        return new ServiceResponse<BookDTO>
+        {
+          isSuccess = false,
+          message = "Network error"
+        };
+      }
+    }
+
     public async Task<ServiceResponse<BookDTO>> AddBook(EditableBook book)
     {
       try

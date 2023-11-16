@@ -1,0 +1,35 @@
+@page "/books/createbook"
+
+@inject BookService BookService
+@inject NavigationManager NavigationManager
+
+<h3>Create Book</h3>
+
+@if (message != null)
+{
+  <p><em>@message</em></p>
+}
+else
+{
+  <BookForm
+    book="book"
+    OnValidSubmit="HandleValidSubmit"
+  ></BookForm>
+}
+
+@code {
+  private EditableBook book = new EditableBook();
+  private string? message = null;
+
+  async Task HandleValidSubmit()
+  {
+    var response = await BookService.AddBook(book);
+    if (response.isSuccess)
+
+      NavigationManager.NavigateTo("/books");
+    else
+      message = response.message;
+  }
+
+
+}

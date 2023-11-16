@@ -1,5 +1,6 @@
 @page "/books"
 @inject BookService BookService
+@inject NavigationManager NavigationManager
 
 <PageTitle>Books</PageTitle>
 
@@ -35,7 +36,10 @@ else
               class="btn btn-primary"
               @onclick="()=> DeleteBook(book.id)"
             >Usuń</button></td>
-          <td><button class="btn btn-primary">Edytuj</button></td>
+          <td><button
+              class="btn btn-primary"
+              @onclick="()=> GoToEdit(book.id)"
+            >Edytuj</button></td>
         </tr>
       }
     </tbody>
@@ -120,6 +124,10 @@ else
     if (pagination.page + 1 >= books.data.pageCount) return;
     pagination.page = pagination.page + 1;
     books = await BookService.GetBooks(pagination);
+  }
+  private void GoToEdit(int id)
+  {
+    NavigationManager.NavigateTo($"/books/editproduct/{id}");
   }
 
 }

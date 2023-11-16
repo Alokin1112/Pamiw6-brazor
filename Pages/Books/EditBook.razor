@@ -1,0 +1,55 @@
+@page "/books/editproduct/{id:int}"
+
+@inject BookService BookService
+@inject NavigationManager NavigationManager
+
+<h3>Edit Book</h3>
+
+@if (message != null)
+{
+  <p><em>@message</em></p>
+}
+else
+{
+  <BookForm
+    book="book"
+    OnValidSubmit="HandleValidSubmit"
+  ></BookForm>
+}
+
+@code {
+  [Parameter]
+  public int id { get; set; }
+
+  private EditableBook book = new EditableBook();
+  private string? message = null;
+
+
+  protected override async Task OnInitializedAsync()
+  {
+    var response = await BookService.GetBookById(id);
+    if (response.isSuccess)
+      book = new EditableBook()
+        {
+          author_id = response.data.author.id,
+          title = response.data.title,
+          pageCount = response.data.pageCount,
+          price = response.data.price,
+          photoUrl = response.data.photoUrl
+        };
+    else
+      message = response.message;
+  }
+
+  async Task HandleValidSubmit()
+  {
+    var response = await BookService.putBook(book, id);
+    if (response.isSuccess)
+
+      NavigationManager.NavigateTo("/books");
+    else
+      message = response.message;
+  }
+
+
+}
