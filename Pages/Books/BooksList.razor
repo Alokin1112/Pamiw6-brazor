@@ -1,4 +1,4 @@
-@page "/books"
+@page "/"
 @inject BookService BookService
 @inject NavigationManager NavigationManager
 
@@ -13,42 +13,15 @@
 }
 else
 {
-  @* <table class="table">
-<thead>
-<tr>
-<th>Tytuł</th>
-<th>Autor</th>
-<th>Liczba stron</th>
-<th>Cena</th>
-<th>Usun</th>
-<th>Edytuj</th>
-</tr>
-</thead>
-<tbody>
-@foreach (var book in books.data.data)
-{
-<tr>
-<td>@book.title</td>
-<td>@(book.author.firstName + " " + book.author.lastName)</td>
-<td>@book.pageCount</td>
-<td>@RoundPrice(book.price) zł</td>
-<td><button
-class="btn btn-danger"
-@onclick="()=> DeleteBook(book.id)"
->Usuń</button></td>
-<td><button
-class="btn btn-primary"
-@onclick="()=> GoToEdit(book.id)"
->Edytuj</button></td>
-</tr>
-}
-</tbody>
-</table> *@
+  <button
+  class="btn btn-primary"
+  @onclick="GoToAdding"
+>Dodaj nowa ksiazke</button>
   <div
-    class="d-flex flex-column align-items-center"
-    style="width: 100%;gap:10px;"
-  >
-    @foreach (var book in books.data.data)
+  class="d-flex flex-column align-items-center"
+  style="width: 100%;gap:10px;"
+>
+  @foreach (var book in books.data.data)
     {
       <div
         class="card"
@@ -73,11 +46,11 @@ class="btn btn-primary"
   </div>
 
   <nav
-    class="d-flex flex-column align-items-center"
-    style="width: 100%;"
-  >
-    <ul class="pagination">
-      @if (pagination.page <= 0)
+  class="d-flex flex-column align-items-center"
+  style="width: 100%;"
+>
+  <ul class="pagination">
+    @if (pagination.page <= 0)
       {
         <li class="page-item disabled">
           <button class="page-link">Previous</button>
@@ -160,4 +133,8 @@ class="btn btn-primary"
     NavigationManager.NavigateTo($"/books/editproduct/{id}");
   }
 
+  private void GoToAdding()
+  {
+    NavigationManager.NavigateTo($"/books/createbook");
+  }
 }
