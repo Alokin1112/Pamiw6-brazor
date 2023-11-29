@@ -1,0 +1,50 @@
+@page "/Login"
+@using Blazored.LocalStorage;
+@using Microsoft.AspNetCore.Components.Authorization;
+@using Pamiw6.Shared.Models
+
+@inject IAuthService AuthService
+@inject ILocalStorageService LocalStorageService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+<h3>Login</h3>
+
+
+<EditForm Model="authenticationRequest" OnValidSubmit="HandleLogin">
+
+	<p>Email:</p>
+	<InputText @bind-Value="authenticationRequest.username" id="username"></InputText>
+	<p>Password:</p>
+	<InputText @bind-Value="authenticationRequest.password" id="password"></InputText>
+
+	<button type="submit">Login In</button>
+
+</EditForm>
+
+@if (!string.IsNullOrEmpty(message))
+{
+	<p>@message</p>
+}
+
+@code {
+
+	private AuthenticationRequest authenticationRequest = new AuthenticationRequest();
+	private string message = string.Empty;
+
+	private async Task HandleLogin()
+	{
+		var result = await AuthService.Login(authenticationRequest);
+		if (result.isSuccess)
+		{
+			await LocalStorageService.SetItemAsync("authToken", result.data.token);
+			await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+			NavigationManager.NavigateTo("/weather");
+		}
+		else
+		{
+			message = result.message;
+		}
+	}
+
+}

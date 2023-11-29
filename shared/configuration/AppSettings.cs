@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +11,6 @@ namespace Pamiw6.Shared.Configuration
         public string BaseAPIUrl { get; set; }
         public BookEndpoint BookEndpoint { get; set; }
         public AuthorEndpoint AuthorEndpoint { get; set; }
+        public AuthEndpoint AuthEndpoint { get; set; }
     }
 }
